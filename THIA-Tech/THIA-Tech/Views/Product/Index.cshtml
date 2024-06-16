@@ -1,0 +1,39 @@
+﻿@model IEnumerable<THIA_Tech.Models.Product>
+@using THIA_Tech.Services
+@inject IProductService _productService;
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="container mt-4 row">
+    <div class="p-0 px-md-2 col-md-4">
+        <div class="card w-50">
+            <div class="card-header">Filters</div>
+            <div class="card-body">Parameter 1</div>
+            <div class="card-body">Parameter 2</div>
+            <div class="card-body">Parameter 3</div>
+        </div>
+    </div>
+	<div class="p-0 px-md-2 col-md-8 mt-4 mt-md-0">
+		<h4>Search results:</h4>
+		<hr />
+		<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3">
+			@foreach(Product product in Model)
+            {
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="@_productService.GetProductImage(product.Id).Result" class="card-img-top" alt="..." />
+                        <div class="card-body">
+                            <h5 class="card-title text-center">@product.Manufacturer @product.Model</h5>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <a class="btn btn-sm btn-primary commonBtn" asp-action="ProductDetails" asp-route-id="@product.Id">Details</a>
+                                <small class="text-body-secondary">@product.Price KM</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+		</div>
+	</div>
+</div>
+

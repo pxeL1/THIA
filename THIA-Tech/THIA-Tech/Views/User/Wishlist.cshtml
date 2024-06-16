@@ -1,0 +1,48 @@
+﻿@using THIA_Tech.Services;
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<User> userManager;
+@inject IUserService userService;
+@inject IProductService productService;
+@{
+    ViewData["Title"] = "Wishlist";
+    var products = userService.GetWishlist(userManager.GetUserId(User)).Result;
+}
+
+<h1 class="text-primary text-center mt-3 fw-bold">Wishlist</h1>
+<hr />
+
+<div class="container mt-4">
+    <div class="border border-secondary-subtle rounded p-3">
+        
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+
+            @foreach (var product in products)
+            {
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="@productService.GetProductImage(product.Id).Result" class="card-img-top" alt="..." />
+                        <div class="card-body">
+                            <h5 class="card-title text-center">@product.Manufacturer @product.Model</h5>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <a class="btn btn-sm btn-primary commonBtn" asp-controller="Product" asp-action="ProductDetails" asp-route-id="@product.Id">Details</a>
+
+                                <small class="text-body-secondary">@product.Price KM</small>
+                                
+                                <form method="post" asp-action="RemoveItemFromWishlist">
+                                    <input type="hidden" name="id" value="@userService.GetWishlistItemByIds(userManager.GetUserId(User), product.Id).Result.Id" />
+                                    <button type="submit" class="btn btn-danger">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                                        </svg>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>

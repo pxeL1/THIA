@@ -1,0 +1,53 @@
+﻿@model NewProductViewModel
+@using THIA_Tech.Services
+@inject ICategoryService _categoryService;
+@{
+    ViewData["Title"] = "AddProduct";
+    var categories = new List<SelectListItem>();
+    foreach(var cat in await _categoryService.GetAllCategories())
+    {
+        categories.Add(new SelectListItem { Value = cat.Id.ToString(), Text = cat.Name });
+    }
+}
+
+<h1 class="text-primary mt-3">Add a new product</h1>
+<hr />
+<div class="col-md-9 mb-4">
+    <h3 class="text-center mt-3">Product details</h3>
+    <hr />
+   
+
+    <form method="post">
+        <div class="form-group mb-3">
+            <h6>Manufacturer<span class="text-danger">*</span> </h6>
+            
+            <input type="text" class="form-control" asp-for="manufacturer" required=""  />
+        </div>
+
+        <div class="form-group mb-3">
+            <h6>Model<span class="text-danger">*</span></h6>
+            
+            <input type="text" class="form-control" asp-for="model" required="" />
+        </div>
+
+        <div class="form-group mb-2">
+            <h6>Price<span class="text-danger">*</span></h6>
+            
+            <input type="number" class="form-control" asp-for="price" required="" />
+        </div>
+        <div class="form-group mb-2">
+            <select asp-for="category" class="form-control" asp-items="categories">
+                <option value="">-- Select a category --</option>
+            </select>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Add product</button>
+
+    </form>
+
+
+
+</div>
+
+    </div>
+

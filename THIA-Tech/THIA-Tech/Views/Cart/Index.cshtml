@@ -1,0 +1,57 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@using THIA_Tech.Services
+@inject SignInManager<User> _signInManager;
+@inject ICartService cartService;
+@inject IProductService productService;
+@inject UserManager<User> userManager;
+@{
+    ViewData["Title"] = "Index";
+    var cartitems = await cartService.GetAllCartItems(userManager.GetUserId(User));
+    var products = await productService.GetProductsInCart(cartitems);
+    double totalPrice = 0;
+    foreach(var product in products)
+    {
+        totalPrice += product.Price;
+    }
+}
+
+
+<div class="container my-4">
+    <h2 class="text-center">Shopping cart</h2>
+    <hr class="mb-4" />
+    @foreach(Product product in products)
+    {
+        <div class="container border rounded p-1 row mb-2">
+            <img class="col" src="@productService.GetProductImage(product.Id).Result" width="200" height="200" />
+            <div class="col text-center align-content-center">
+                @product.Manufacturer @product.Model
+            </div>
+            <div class="col text-center align-content-center text-secondary">
+                @product.Price KM
+            </div>
+            <div class="col justify-content-center align-content-center">
+                Amount: @cartService.GetCartItemByIds(userManager.GetUserId(User), product.Id).Result.Count
+            </div>
+            <div class="col justify-content-center align-content-center">
+                <form method="post" asp-action="RemoveItemFromCart">
+                    <input type="hidden" name="id" value="@cartService.GetCartItemByIds(userManager.GetUserId(User), product.Id).Result.Id" />
+                    <button type="submit" class="btn btn-danger">Remove from cart</button>
+                </form>
+                
+            </div>
+        </div>
+        
+    }
+</div>
+
+<div class="text-primary fw-bold">
+    Total price: @totalPrice
+</div>
+@if(cartitems.Any()){<form asp-action="Index" method="post">
+    <div class="mb-3">
+        <label for="address" class="form-label">Full shipping address</label>
+        <input name="address" class="form-control" type="text" placeholder="" />
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Create Order</button>
+</form>}
